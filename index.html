@@ -1,23 +1,27 @@
 <!doctype html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#ffffff">
-  <meta name="description" content="Inventory: controla tus productos, existencias y ventas de forma privada.">
-  <title>Inventory</title>
-</head>
-<body>
-  <div id="app">
-    <div class="app-loading" role="status">
-      <div class="loading-mark">I<span>.</span></div>
-      <p>Preparando tu inventario...</p>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#faf9f6">
+    <meta name="description" content="Inventory: organiza tus productos, controla tus existencias y administra tus ventas.">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>Inventory</title>
+  </head>
+
+  <body>
+    <div id="app">
+      <div class="app-loading" role="status" aria-live="polite">
+        <div class="loading-mark">I<span>.</span></div>
+        <p>Preparando tu espacio de trabajo</p>
+      </div>
     </div>
-  </div>
 
-  <div id="toast-root" aria-live="polite" aria-atomic="true"></div>
-  <div id="modal-root"></div>
+    <div id="toast-root" aria-live="polite"></div>
+    <div id="modal-root"></div>
 
-  <script type="module" src="/src/main.js"></script>
-</body>
+    <script type="module" src="/src/main.js"></script>
+  </body>
 </html>
