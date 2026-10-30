@@ -1,3 +1,4 @@
+
 import '../styles.css';
 
 import {
@@ -90,27 +91,47 @@ function shell(content, active = 'home', navigation = true) {
             <p class="brand-caption">Tu negocio, bajo control</p>
           </div>
         </div>
+
         <button class="avatar-button" data-action="settings" aria-label="Configuración">
           ${escapeHTML(name.slice(0, 1).toUpperCase())}
         </button>
       </header>
-      <main>${content}</main>
+
+      <main class="page-content">${content}</main>
+
       ${navigation ? `
         <nav class="bottom-nav" aria-label="Navegación principal">
           <button type="button" class="bottom-nav__item ${active === 'home' ? 'is-active' : ''}" data-action="home" ${active === 'home' ? 'aria-current="page"' : ''}>
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7"/><path d="M5 9v12h14V9"/><path d="M9 21v-7h6v7"/></svg>
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="m3 10 9-7 9 7"/>
+              <path d="M5 9v12h14V9"/>
+              <path d="M9 21v-7h6v7"/>
+            </svg>
             <span>Inicio</span>
           </button>
+
           <button type="button" class="bottom-nav__item ${active === 'inventories' ? 'is-active' : ''}" data-action="inventories" ${active === 'inventories' ? 'aria-current="page"' : ''}>
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16M13 8h4M13 12h4M13 16h4"/></svg>
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="16" rx="2"/>
+              <path d="M9 4v16M13 8h4M13 12h4M13 16h4"/>
+            </svg>
             <span>Inventario</span>
           </button>
+
           <button type="button" class="bottom-nav__item ${active === 'sales-history' ? 'is-active' : ''}" data-action="sales-history" ${active === 'sales-history' ? 'aria-current="page"' : ''}>
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="m7 14 4-4 3 3 6-7"/><path d="M15 6h5v5"/></svg>
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M3 3v18h18"/>
+              <path d="m7 14 4-4 3 3 6-7"/>
+              <path d="M15 6h5v5"/>
+            </svg>
             <span>Ventas</span>
           </button>
+
           <button type="button" class="bottom-nav__item ${active === 'settings' ? 'is-active' : ''}" data-action="settings" ${active === 'settings' ? 'aria-current="page"' : ''}>
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="m19.4 15 .1.1 1.4 1.1-1.4 2.4-1.7-.7a8 8 0 0 1-2 .9l-.3 1.8h-2.8l-.3-1.8a8 8 0 0 1-2-.9l-1.7.7-1.4-2.4 1.4-1.1a8 8 0 0 1 0-2.2l-1.4-1.1 1.4-2.4 1.7.7a8 8 0 0 1 2-.9l.3-1.8h2.8l.3 1.8a8 8 0 0 1 2 .9l1.7-.7 1.4 2.4-1.4 1.1a8 8 0 0 1 0 2.1Z" transform="translate(-1 -1) scale(1.08)"/></svg>
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="m19.4 15 .1.1 1.4 1.1-1.4 2.4-1.7-.7a8 8 0 0 1-2 .9l-.3 1.8h-2.8l-.3-1.8a8 8 0 0 1-2-.9l-1.7.7-1.4-2.4 1.4-1.1a8 8 0 0 1 0-2.2l-1.4-1.1 1.4-2.4 1.7.7a8 8 0 0 1 2-.9l.3-1.8h2.8l.3 1.8a8 8 0 0 1 2 .9l1.7-.7 1.4 2.4-1.4 1.1a8 8 0 0 1 0 2.1Z" transform="translate(-1 -1) scale(1.08)"/>
+            </svg>
             <span>Ajustes</span>
           </button>
         </nav>
@@ -124,10 +145,15 @@ function openModal(title, description, content, footer = '') {
     <div class="modal-backdrop" data-action="backdrop-close">
       <section class="modal" role="dialog" aria-modal="true">
         <header class="modal__header">
-          <div><h2>${escapeHTML(title)}</h2><p>${escapeHTML(description)}</p></div>
+          <div>
+            <h2>${escapeHTML(title)}</h2>
+            <p>${escapeHTML(description)}</p>
+          </div>
           <button class="modal__close" data-action="close-modal" aria-label="Cerrar">×</button>
         </header>
+
         <div class="modal__body">${content}</div>
+
         ${footer ? `<footer class="modal__footer">${footer}</footer>` : ''}
       </section>
     </div>
@@ -144,11 +170,23 @@ function showWelcome() {
   renderInto('#app', `
     <div class="app-shell">
       <section class="welcome-screen">
-        <div class="welcome-visual"><div class="welcome-visual__orb">I<span>.</span></div></div>
+        <div class="welcome-visual">
+          <div class="welcome-visual__orb">I<span>.</span></div>
+        </div>
+
         <span class="eyebrow">ORGANIZA · CONTROLA · CRECE</span>
+
         <h1>Tu inventario,<br><em>sin complicaciones.</em></h1>
-        <p>Controla tus productos, existencias y ventas desde un solo lugar. Tus datos permanecen en este dispositivo.</p>
-        <button class="button button--primary button--full" data-action="setup">Comenzar →</button>
+
+        <p>
+          Controla tus productos, existencias y ventas desde un solo lugar.
+          Tus datos permanecen en este dispositivo.
+        </p>
+
+        <button class="button button--primary button--full" data-action="setup">
+          Comenzar →
+        </button>
+
         <p class="small muted">Privado por diseño · Sin crear una cuenta</p>
       </section>
     </div>
@@ -162,14 +200,35 @@ function showSetup() {
     <div class="app-shell">
       <section class="welcome-screen">
         <span class="eyebrow">PRIMEROS PASOS</span>
+
         <h1>Vamos a preparar<br><em>tu espacio.</em></h1>
+
         <p>Completa estos datos para personalizar Inventory.</p>
+
         <form class="form-card" data-form="profile">
-          <label>Tu nombre<input name="ownerName" maxlength="70" required placeholder="Tu nombre"></label>
-          <label>Nombre del negocio<input name="businessName" maxlength="100" required placeholder="Nombre de tu negocio"></label>
-          <label>Tipo de negocio<input name="businessType" maxlength="100" placeholder="Ej. Ropa y accesorios"></label>
-          <label>Descripción<textarea name="businessDescription" maxlength="500" placeholder="Descripción opcional"></textarea></label>
-          <button class="button button--primary button--full" type="submit">Crear mi espacio</button>
+          <label>
+            Tu nombre
+            <input name="ownerName" maxlength="70" required placeholder="Tu nombre">
+          </label>
+
+          <label>
+            Nombre del negocio
+            <input name="businessName" maxlength="100" required placeholder="Nombre de tu negocio">
+          </label>
+
+          <label>
+            Tipo de negocio
+            <input name="businessType" maxlength="100" placeholder="Ej. Ropa y accesorios">
+          </label>
+
+          <label>
+            Descripción
+            <textarea name="businessDescription" maxlength="500" placeholder="Descripción opcional"></textarea>
+          </label>
+
+          <button class="button button--primary button--full" type="submit">
+            Crear mi espacio
+          </button>
         </form>
       </section>
     </div>
@@ -199,7 +258,9 @@ async function showHome() {
   let lowCount = 0;
   let cards = '';
   let todaySales = 0;
-  const today = new Date().toISOString().slice(0, 10);
+
+  const now = new Date();
+  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
 
   for (const inventory of state.inventories) {
     const products = await getProducts(inventory.id);
@@ -209,6 +270,7 @@ async function showHome() {
     productCount += products.length;
     units += products.reduce((sum, p) => sum + Number(p.quantity || 0), 0);
     lowCount += low.length;
+
     todaySales += sales
       .filter(s => s.date?.slice(0, 10) === today)
       .reduce((sum, s) => sum + Number(s.total || 0), 0);
@@ -223,21 +285,38 @@ async function showHome() {
   const content = `
     <section class="dashboard-greeting">
       <span class="eyebrow">PANEL PRINCIPAL</span>
+
       <h1>¡Hola, ${escapeHTML(state.profile?.ownerName || 'bienvenido')}!</h1>
-      <p>${escapeHTML(state.profile?.businessName || 'Tu negocio')} · Resumen general.</p>
+
+      <p>
+        ${escapeHTML(state.profile?.businessName || 'Tu negocio')}
+        · Resumen general.
+      </p>
     </section>
 
     <section class="stats-grid">
       ${statCard('Inventarios', state.inventories.length, 'gold')}
       ${statCard('Productos', productCount, 'blue')}
       ${statCard('Unidades', units, 'green')}
-      ${statCard('Stock bajo', lowCount, lowCount ? 'red' : 'green')}
+      ${statCard('Stock bajo', lowCount, lowCount ? 'warning' : 'green')}
     </section>
 
     <section class="panel">
-      <h2>Ventas de hoy</h2>
-      <strong style="font-size:28px">${escapeHTML(formatMoney(todaySales, 'USD'))}</strong>
-      <p class="muted small">Importe sumado de las ventas registradas hoy.</p>
+      <div class="panel__header">
+        <div>
+          <h2>Ventas de hoy</h2>
+          <p>Resumen de las operaciones registradas.</p>
+        </div>
+      </div>
+
+      <strong style="font-size:28px">
+        ${escapeHTML(formatMoney(todaySales, 'USD'))}
+      </strong>
+
+      <p class="muted small">
+        Importe sumado de las ventas registradas hoy.
+      </p>
+
       <div class="inline-actions">
         ${actionButton('Historial de ventas', 'sales-history')}
         ${actionButton('Ver alertas', 'low-stock')}
@@ -249,11 +328,18 @@ async function showHome() {
         <h2>Tus inventarios</h2>
         <p>Organiza tus productos por colección.</p>
       </div>
-      <button class="button button--primary button--icon" data-action="add-inventory">+</button>
+
+      <button class="button button--primary button--icon" data-action="add-inventory">
+        +
+      </button>
     </div>
 
     <section class="inventory-list">
-      ${cards || emptyState('Aún no tienes inventarios', 'Crea uno para empezar a registrar productos.', 'add-inventory')}
+      ${cards || emptyState(
+        'Aún no tienes inventarios',
+        'Crea uno para empezar a registrar productos.',
+        'add-inventory'
+      )}
     </section>
   `;
 
@@ -278,8 +364,13 @@ async function showInventories() {
 
   renderInto('#app', shell(`
     ${pageHeader('Inventarios', 'Organiza tus productos.', 'add-inventory')}
+
     <section class="inventory-list">
-      ${cards || emptyState('Tu espacio está listo', 'Crea tu primer inventario.', 'add-inventory')}
+      ${cards || emptyState(
+        'Tu espacio está listo',
+        'Crea tu primer inventario.',
+        'add-inventory'
+      )}
     </section>
   `, 'inventories'));
 }
@@ -295,6 +386,7 @@ async function showInventory(id) {
 
   state.screen = 'inventory';
   state.activeInventoryId = inventory.id;
+
   await setSetting('activeInventoryId', inventory.id);
 
   renderInto('#app', shell(`
@@ -303,11 +395,21 @@ async function showInventory(id) {
       ${actionButton('Editar inventario', 'edit-inventory', `data-id="${inventory.id}"`)}
     </div>
 
-    ${pageHeader(inventory.name, inventory.description || 'Productos de este inventario.', 'add-product')}
+    ${pageHeader(
+      inventory.name,
+      inventory.description || 'Productos de este inventario.',
+      'add-product'
+    )}
 
     <div class="search-box">
       <span class="search-box__icon">⌕</span>
-      <input id="product-search" type="search" placeholder="Buscar nombre, código o categoría..." autocomplete="off">
+
+      <input
+        id="product-search"
+        type="search"
+        placeholder="Buscar nombre, código o categoría..."
+        autocomplete="off"
+      >
     </div>
 
     <div class="section-heading">
@@ -325,6 +427,7 @@ async function showInventory(id) {
 
 async function renderProductList(query) {
   const target = $('#product-list');
+
   if (!target || !state.activeInventoryId) return;
 
   const products = await searchProducts(state.activeInventoryId, query);
@@ -335,17 +438,23 @@ async function renderProductList(query) {
       query ? 'Prueba con otro nombre o código.' : 'Agrega el primer producto.',
       query ? '' : 'add-product'
     ));
+
     return;
   }
 
   renderInto(target, products.map(product => {
     const html = productCard(product);
     const score = Number(product.searchScore || 0);
-    const tone = score >= 80 ? 'match-high' : score >= 20 ? 'match-medium' : '';
+
+    const tone = score >= 80
+      ? 'match'
+      : score >= 20
+        ? 'partial'
+        : 'weak';
 
     return html.replace(
       'class="product-card"',
-      `class="product-card ${tone ? `product-card--${tone}` : ''}" data-product-photo="${Number(product.id)}"`
+      `class="product-card product-card--${tone}"`
     );
   }).join(''));
 }
@@ -357,10 +466,20 @@ function inventoryForm(inventory = null) {
     `
       <form id="inventory-form" data-form="inventory">
         <input type="hidden" name="id" value="${inventory?.id ?? ''}">
-        <label>Nombre
-          <input name="name" maxlength="100" required value="${escapeHTML(inventory?.name || '')}" placeholder="Ej. Ropa de mujer">
+
+        <label>
+          Nombre
+          <input
+            name="name"
+            maxlength="100"
+            required
+            value="${escapeHTML(inventory?.name || '')}"
+            placeholder="Ej. Ropa de mujer"
+          >
         </label>
-        <label>Descripción (opcional)
+
+        <label>
+          Descripción (opcional)
           <textarea name="description" maxlength="500">${escapeHTML(inventory?.description || '')}</textarea>
         </label>
       </form>
@@ -380,38 +499,92 @@ function productForm(product = null) {
     'Registra los datos y las existencias.',
     `
       <form id="product-form" data-form="product">
-        <label>Nombre del producto
-          <input name="name" maxlength="140" required value="${escapeHTML(product?.name || '')}" placeholder="Ej. Camisa clásica">
+        <label>
+          Nombre del producto
+          <input
+            name="name"
+            maxlength="140"
+            required
+            value="${escapeHTML(product?.name || '')}"
+            placeholder="Ej. Camisa clásica"
+          >
         </label>
 
         <div class="form-grid">
-          <label>Código o referencia
-            <input name="code" maxlength="80" value="${escapeHTML(product?.code || '')}" placeholder="Opcional">
+          <label>
+            Código o referencia
+            <input
+              name="code"
+              maxlength="80"
+              value="${escapeHTML(product?.code || '')}"
+              placeholder="Opcional"
+            >
           </label>
-          <label>Categoría
-            <input name="category" maxlength="80" value="${escapeHTML(product?.category || '')}" placeholder="Ej. Camisas">
+
+          <label>
+            Categoría
+            <input
+              name="category"
+              maxlength="80"
+              value="${escapeHTML(product?.category || '')}"
+              placeholder="Ej. Camisas"
+            >
           </label>
         </div>
 
         <div class="form-grid">
-          <label>Precio normal
-            <input name="price" type="number" min="0" step="0.01" required value="${product?.price ?? ''}">
+          <label>
+            Precio normal
+            <input
+              name="price"
+              type="number"
+              min="0"
+              step="0.01"
+              required
+              value="${product?.price ?? ''}"
+            >
           </label>
-          <label>Precio de oferta
-            <input name="offerPrice" type="number" min="0" step="0.01" value="${product?.offerPrice ?? ''}" placeholder="Opcional">
+
+          <label>
+            Precio de oferta
+            <input
+              name="offerPrice"
+              type="number"
+              min="0"
+              step="0.01"
+              value="${product?.offerPrice ?? ''}"
+              placeholder="Opcional"
+            >
           </label>
         </div>
 
         <div class="form-grid">
-          <label>Cantidad disponible
-            <input name="quantity" type="number" min="0" step="1" required value="${product?.quantity ?? 0}">
+          <label>
+            Cantidad disponible
+            <input
+              name="quantity"
+              type="number"
+              min="0"
+              step="1"
+              required
+              value="${product?.quantity ?? 0}"
+            >
           </label>
-          <label>Alertar cuando queden
-            <input name="lowStockThreshold" type="number" min="0" step="1" value="${product?.lowStockThreshold ?? 3}">
+
+          <label>
+            Alertar cuando queden
+            <input
+              name="lowStockThreshold"
+              type="number"
+              min="0"
+              step="1"
+              value="${product?.lowStockThreshold ?? 3}"
+            >
           </label>
         </div>
 
-        <label>Moneda
+        <label>
+          Moneda
           <select name="currency">
             <option value="USD" ${product?.currency === 'USD' ? 'selected' : ''}>USD — Dólar</option>
             <option value="VES" ${product?.currency === 'VES' ? 'selected' : ''}>VES — Bolívar</option>
@@ -419,20 +592,36 @@ function productForm(product = null) {
           </select>
         </label>
 
-        <label>Descripción (opcional)
+        <label>
+          Descripción (opcional)
           <textarea name="description" maxlength="1000">${escapeHTML(product?.description || '')}</textarea>
         </label>
 
-        <label>Foto del producto
+        <label>
+          Foto del producto
           <input name="photoFile" type="file" accept="image/*">
         </label>
 
         ${product?.photo ? `
-          <img class="photo-preview" src="${escapeHTML(product.photo)}" alt="Foto actual">
-          <button type="button" class="button button--ghost" data-action="remove-photo">Quitar foto actual</button>
+          <img
+            id="product-photo-preview"
+            class="photo-preview"
+            src="${escapeHTML(product.photo)}"
+            alt="Foto actual"
+          >
+
+          <button
+            type="button"
+            class="button button--ghost"
+            data-action="remove-photo"
+          >
+            Quitar foto actual
+          </button>
         ` : ''}
 
-        <p class="form-help">La foto se guarda en este dispositivo. Se recomienda usar imágenes de menos de 8 MB.</p>
+        <p class="form-help">
+          La foto se guarda en este dispositivo. Se recomienda usar imágenes de menos de 8 MB.
+        </p>
       </form>
     `,
     `
@@ -454,17 +643,36 @@ function sellForm(product) {
     `
       <form id="sale-form" data-form="sale">
         <input type="hidden" name="productId" value="${product.id}">
+
         <p>Existencias disponibles: <strong>${product.quantity}</strong></p>
 
-        <label>Cantidad a vender
-          <input name="quantity" type="number" min="1" max="${product.quantity}" step="1" value="1" required>
+        <label>
+          Cantidad a vender
+          <input
+            name="quantity"
+            type="number"
+            min="1"
+            max="${product.quantity}"
+            step="1"
+            value="1"
+            required
+          >
         </label>
 
-        <label>Precio por unidad (${escapeHTML(product.currency || 'USD')})
-          <input name="unitPrice" type="number" min="0" step="0.01" value="${price}" required>
+        <label>
+          Precio por unidad (${escapeHTML(product.currency || 'USD')})
+          <input
+            name="unitPrice"
+            type="number"
+            min="0"
+            step="0.01"
+            value="${price}"
+            required
+          >
         </label>
 
-        <label>Método de pago
+        <label>
+          Método de pago
           <select name="paymentMethod">
             <option value="efectivo">Efectivo</option>
             <option value="transferencia">Transferencia</option>
@@ -475,7 +683,9 @@ function sellForm(product) {
           </select>
         </label>
 
-        <p class="form-help">Al confirmar, la venta se guardará y el stock disminuirá automáticamente.</p>
+        <p class="form-help">
+          Al confirmar, la venta se guardará y el stock disminuirá automáticamente.
+        </p>
       </form>
     `,
     `
@@ -484,7 +694,6 @@ function sellForm(product) {
     `
   );
 }
-
 function profileForm() {
   const profile = state.profile || {};
 
@@ -579,7 +788,7 @@ async function handleFormSubmit(form) {
     }
 
     const photoInput = form.elements.photoFile;
-    let photo = form.dataset.removePhoto === 'true' ? null : null;
+    let photo = null;
 
     if (state.editingProductId) {
       const existing = await getProduct(state.editingProductId);
@@ -801,7 +1010,7 @@ function showPhoto(product) {
   openModal(
     product.name,
     'Fotografía del producto',
-    `<div class="photo-viewer"><img src="${product.photo}" alt="${escapeHTML(product.name)}"></div>`,
+    `<div class="photo-viewer"><img src="${escapeHTML(product.photo)}" alt="${escapeHTML(product.name)}"></div>`,
     `<button class="button button--secondary" data-action="close-modal">Cerrar</button>`
   );
 }
@@ -1019,6 +1228,5 @@ async function init() {
     `);
   }
 }
-
 
 init();
