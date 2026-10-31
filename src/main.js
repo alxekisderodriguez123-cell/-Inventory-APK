@@ -1,4 +1,3 @@
-
 import '../styles.css';
 
 import {
@@ -55,7 +54,8 @@ const state = {
   inventories: [],
   activeInventoryId: null,
   editingProductId: null,
-  busy: false
+  busy: false,
+  tutorialStep: 0
 };
 
 function toast(message, error = false) {
@@ -85,15 +85,19 @@ function shell(content, active = 'home', navigation = true) {
     <div class="app-shell">
       <header class="topbar">
         <div class="brand">
-          <div class="brand-mark">I<span>.</span></div>
+          <div class="brand-mark"><img src="./assets/inventory-logo.png" alt="Inventory"></div>
           <div>
             <p class="brand-name">Inventory</p>
             <p class="brand-caption">Tu negocio, bajo control</p>
           </div>
         </div>
 
-        <button class="avatar-button" data-action="settings" aria-label="Configuración">
-          ${escapeHTML(name.slice(0, 1).toUpperCase())}
+        <button class="avatar-button" data-action="settings" aria-label="Configuración" title="Configuración">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M12 2.8v2M12 19.2v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2.8 12h2m14.4 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>
+            <circle cx="12" cy="12" r="7.2"/>
+          </svg>
         </button>
       </header>
 
@@ -171,7 +175,7 @@ function showWelcome() {
     <div class="app-shell">
       <section class="welcome-screen">
         <div class="welcome-visual">
-          <div class="welcome-visual__orb">I<span>.</span></div>
+          <div class="welcome-visual__orb"><img src="./assets/inventory-logo.png" alt="Inventory"></div>
         </div>
 
         <span class="eyebrow">ORGANIZA · CONTROLA · CRECE</span>
@@ -749,11 +753,16 @@ async function handleFormSubmit(form) {
       throw new Error('Completa tu nombre y el nombre del negocio.');
     }
 
+    const isFirstProfile = !state.profile;
     await setSetting('profile', profile);
     state.profile = profile;
     closeModal();
     toast('Perfil guardado correctamente.');
     await showHome();
+
+    if (isFirstProfile && !(await getSetting('tutorialSeen', false))) {
+      await showTutorial(0);
+    }
     return;
   }
 
@@ -966,12 +975,17 @@ async function showSettings() {
     ${pageHeader('Configuración', 'Tu aplicación, tus datos y tus reglas.')}
     <section class="panel settings-panel">
       <div class="settings-profile">
-        <div class="profile-avatar">I.</div>
+        <div class="profile-avatar"><img src="./assets/inventory-logo.png" alt="Inventory"></div>
         <div>
           <strong>${escapeHTML(state.profile?.businessName || 'Mi negocio')}</strong>
           <p>${escapeHTML(state.profile?.ownerName || '')}</p>
         </div>
       </div>
+
+      <button class="settings-row" data-action="tutorial">
+        <span><strong>Ver tutorial</strong><small>Repasa cómo utilizar Inventory</small></span>
+        <span>›</span>
+      </button>
 
       <button class="settings-row" data-action="edit-profile">
         <span><strong>Perfil del negocio</strong><small>Nombre y datos básicos</small></span>
@@ -1001,6 +1015,61 @@ async function showSettings() {
   `, 'settings'));
 }
 
+async function finishTutorial() {
+  await setSetting('tutorialSeen', true);
+  closeModal();
+  toast('¡Listo! Ya conoces lo básico de Inventory.');
+}
+
+async function showTutorial(step = 0) {
+  const steps = [
+    {
+      title: 'Tu panel principal',
+      text: 'Aquí tienes el resumen de tu negocio: inventarios, productos, unidades y alertas de stock bajo. También puedes revisar las ventas del día.',
+      tip: 'Usa Inicio para volver al resumen cuando quieras.'
+    },
+    {
+      title: 'Inventarios y productos',
+      text: 'Crea inventarios para organizar tu mercancía. Dentro de cada uno puedes registrar productos, fotos, precios, cantidades y códigos.',
+      tip: 'La búsqueda te ayuda a encontrar rápidamente un producto mientras atiendes a tus clientes.'
+    },
+    {
+      title: 'Registra tus ventas',
+      text: 'Desde un producto puedes registrar una venta, indicar la cantidad y el método de pago. Inventory descuenta las unidades vendidas automáticamente.',
+      tip: 'Consulta después cada operación en el Historial de ventas.'
+    },
+    {
+      title: 'Alertas y copias de seguridad',
+      text: 'Revisa Stock bajo para detectar productos que necesitan reposición. En Configuración puedes editar tu perfil, exportar tus datos o restaurar una copia.',
+      tip: 'Tus datos se guardan localmente en este dispositivo. Exporta copias de seguridad periódicamente.'
+    }
+  ];
+
+  const current = Math.max(0, Math.min(Number(step) || 0, steps.length - 1));
+  state.tutorialStep = current;
+  const item = steps[current];
+
+  const progress = steps.map((_, index) =>
+    '<span class="tutorial-progress__dot ' + (index <= current ? 'is-active' : '') + '"></span>'
+  ).join('');
+
+  openModal(
+    'Conoce Inventory · ' + (current + 1) + ' de ' + steps.length,
+    'Una guía rápida para empezar.',
+    '<div class="tutorial-card">' +
+      '<div class="tutorial-progress" aria-label="Progreso">' + progress + '</div>' +
+      '<h3>' + item.title + '</h3>' +
+      '<p>' + item.text + '</p>' +
+      '<div class="tutorial-tip"><strong>Consejo</strong><p>' + item.tip + '</p></div>' +
+    '</div>',
+    '<button class="button button--ghost" data-action="tutorial-skip">Saltar</button>' +
+    (current > 0 ? '<button class="button button--secondary" data-action="tutorial-prev">Atrás</button>' : '') +
+    '<button class="button button--primary" data-action="tutorial-next">' +
+      (current === steps.length - 1 ? 'Finalizar' : 'Siguiente') +
+    '</button>'
+  );
+}
+
 function showPhoto(product) {
   if (!product?.photo) {
     toast('Este producto no tiene una foto.', true);
@@ -1021,6 +1090,27 @@ async function handleClick(action, element) {
   switch (action) {
     case 'setup':
       showSetup();
+      break;
+
+    case 'tutorial':
+      await showTutorial(0);
+      break;
+
+    case 'tutorial-next':
+      if (state.tutorialStep >= 3) await finishTutorial();
+      else await showTutorial(state.tutorialStep + 1);
+      break;
+
+    case 'tutorial-prev':
+      await showTutorial(state.tutorialStep - 1);
+      break;
+
+    case 'tutorial-skip':
+      await finishTutorial();
+      break;
+
+    case 'retry-init':
+      await init();
       break;
 
     case 'home':
