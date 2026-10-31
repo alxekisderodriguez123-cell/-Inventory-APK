@@ -205,33 +205,52 @@ a:focus-visible,
 }
 
 .loading-mark {
+  position: relative;
   display: grid;
   place-items: center;
-  width: 76px;
-  height: 76px;
-  border: 1px solid var(--gold-light);
-  border-radius: 25px;
 
-  background: linear-gradient(
-    145deg,
-    #fff,
-    #f5eedf
-  );
+  width: 112px;
+  height: 112px;
+
+  border: 1px solid var(--gold-light);
+  border-radius: 32px;
+
+  background: linear-gradient(145deg, #fff, #f5eedf);
 
   box-shadow:
-    0 12px 32px rgba(150, 118, 66, .12),
+    0 15px 38px rgba(150, 118, 66, .14),
     inset 0 1px 0 #fff;
-
-  color: var(--gold-dark);
-  font-size: 35px;
-  font-weight: 850;
-  letter-spacing: -4px;
 
   animation: loading-float 2.5s ease-in-out infinite;
 }
 
-.loading-mark span {
-  color: var(--gold);
+.loading-mark img {
+  width: 82px;
+  height: 82px;
+  object-fit: contain;
+}
+
+.loading-mark::after {
+  position: absolute;
+  bottom: -19px;
+
+  width: 23px;
+  height: 23px;
+
+  border: 2px solid var(--gold-light);
+  border-top-color: var(--gold-dark);
+  border-radius: 50%;
+
+  animation: loading-spin .8s linear infinite;
+
+  content: "";
+}
+
+.app-loading p {
+  margin-top: 35px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .2px;
 }
 
 /* 04. APP STRUCTURE
@@ -1983,6 +2002,12 @@ textarea {
 @keyframes loading-float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-7px); }
+}
+
+@keyframes loading-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes welcome-float {
