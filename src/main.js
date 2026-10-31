@@ -54,8 +54,7 @@ const state = {
   inventories: [],
   activeInventoryId: null,
   editingProductId: null,
-  busy: false,
-  tutorialStep: 0
+  busy: false
 };
 
 function toast(message, error = false) {
@@ -85,18 +84,19 @@ function shell(content, active = 'home', navigation = true) {
     <div class="app-shell">
       <header class="topbar">
         <div class="brand">
-          <div class="brand-mark"><img src="./assets/inventory-logo.png" alt="Inventory"></div>
+          <div class="brand-mark">
+            <img src="./assets/inventory-logo.png" alt="Inventory" class="inventory-logo">
+          </div>
           <div>
             <p class="brand-name">Inventory</p>
             <p class="brand-caption">Tu negocio, bajo control</p>
           </div>
         </div>
 
-        <button class="avatar-button" data-action="settings" aria-label="Configuración" title="Configuración">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <button class="avatar-button" data-action="settings" aria-label="Configuración">
+          <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <circle cx="12" cy="12" r="3"/>
-            <path d="M12 2.8v2M12 19.2v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2.8 12h2m14.4 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>
-            <circle cx="12" cy="12" r="7.2"/>
+            <path d="m19.4 15 .1.1 1.4 1.1-1.4 2.4-1.7-.7a8 8 0 0 1-2 .9l-.3 1.8h-2.8l-.3-1.8a8 8 0 0 1-2-.9l-1.7.7-1.4-2.4 1.4-1.1a8 8 0 0 1 0-2.2l-1.4-1.1 1.4-2.4 1.7.7a8 8 0 0 1 2-.9l.3-1.8h2.8l.3 1.8a8 8 0 0 1 2 .9l1.7-.7 1.4 2.4-1.4 1.1a8 8 0 0 1 0 2.1Z"/>
           </svg>
         </button>
       </header>
@@ -175,7 +175,9 @@ function showWelcome() {
     <div class="app-shell">
       <section class="welcome-screen">
         <div class="welcome-visual">
-          <div class="welcome-visual__orb"><img src="./assets/inventory-logo.png" alt="Inventory"></div>
+          <div class="welcome-visual__orb">
+            <img src="./assets/inventory-logo.png" alt="Inventory" class="inventory-logo">
+          </div>
         </div>
 
         <span class="eyebrow">ORGANIZA · CONTROLA · CRECE</span>
@@ -332,8 +334,7 @@ async function showHome() {
         <h2>Tus inventarios</h2>
         <p>Organiza tus productos por colección.</p>
       </div>
-
-      <button class="button button--primary button--icon" data-action="add-inventory">
+            <button class="button button--primary button--icon" data-action="add-inventory">
         +
       </button>
     </div>
@@ -662,8 +663,7 @@ function sellForm(product) {
             required
           >
         </label>
-
-        <label>
+                <label>
           Precio por unidad (${escapeHTML(product.currency || 'USD')})
           <input
             name="unitPrice"
@@ -753,16 +753,11 @@ async function handleFormSubmit(form) {
       throw new Error('Completa tu nombre y el nombre del negocio.');
     }
 
-    const isFirstProfile = !state.profile;
     await setSetting('profile', profile);
     state.profile = profile;
     closeModal();
     toast('Perfil guardado correctamente.');
     await showHome();
-
-    if (isFirstProfile && !(await getSetting('tutorialSeen', false))) {
-      await showTutorial(0);
-    }
     return;
   }
 
@@ -975,17 +970,14 @@ async function showSettings() {
     ${pageHeader('Configuración', 'Tu aplicación, tus datos y tus reglas.')}
     <section class="panel settings-panel">
       <div class="settings-profile">
-        <div class="profile-avatar"><img src="./assets/inventory-logo.png" alt="Inventory"></div>
+        <div class="profile-avatar">
+          <img src="./assets/inventory-logo.png" alt="Inventory" class="inventory-logo">
+        </div>
         <div>
           <strong>${escapeHTML(state.profile?.businessName || 'Mi negocio')}</strong>
           <p>${escapeHTML(state.profile?.ownerName || '')}</p>
         </div>
       </div>
-
-      <button class="settings-row" data-action="tutorial">
-        <span><strong>Ver tutorial</strong><small>Repasa cómo utilizar Inventory</small></span>
-        <span>›</span>
-      </button>
 
       <button class="settings-row" data-action="edit-profile">
         <span><strong>Perfil del negocio</strong><small>Nombre y datos básicos</small></span>
@@ -999,6 +991,10 @@ async function showSettings() {
 
       <button class="settings-row" data-action="choose-import">
         <span><strong>Importar copia de seguridad</strong><small>Restaurar datos desde un archivo JSON</small></span>
+        <span>›</span>
+      </button>
+            <button class="settings-row" data-action="show-tutorial">
+        <span><strong>Ver tutorial de nuevo</strong><small>Aprende a utilizar Inventory paso a paso</small></span>
         <span>›</span>
       </button>
 
@@ -1015,59 +1011,92 @@ async function showSettings() {
   `, 'settings'));
 }
 
+const tutorialSteps = [
+  {
+    icon: '▦',
+    title: 'Tu panel principal',
+    description: 'Aquí encontrarás un resumen de tu negocio: inventarios, productos, unidades disponibles y alertas de stock bajo.',
+    tip: 'Desde Inicio puedes consultar rápidamente cómo marcha tu inventario.'
+  },
+  {
+    icon: '▤',
+    title: 'Organiza tus inventarios',
+    description: 'Crea inventarios para separar tus productos. Dentro de cada uno puedes registrar nombres, códigos, categorías, cantidades, precios y fotografías.',
+    tip: 'Utiliza el buscador para localizar productos sin tener que revisar listas interminables.'
+  },
+  {
+    icon: '↗',
+    title: 'Registra tus ventas',
+    description: 'Puedes registrar ventas desde los productos. Inventory actualizará las existencias automáticamente y guardará cada operación en el historial.',
+    tip: 'Consulta el historial cuando necesites revisar una venta anterior.'
+  },
+  {
+    icon: '⚙',
+    title: 'Alertas y configuración',
+    description: 'Consulta los productos con poco stock, modifica tu perfil y administra tus copias de seguridad desde Ajustes.',
+    tip: 'Exporta copias de seguridad periódicamente para proteger tus datos.'
+  }
+];
+
+let tutorialIndex = 0;
+
+function showTutorial(index = 0) {
+  tutorialIndex = Math.max(0, Math.min(index, tutorialSteps.length - 1));
+  renderTutorialStep();
+}
+
+function renderTutorialStep() {
+  const step = tutorialSteps[tutorialIndex];
+  const isLast = tutorialIndex === tutorialSteps.length - 1;
+
+  openModal(
+    'Conoce Inventory',
+    `Paso ${tutorialIndex + 1} de ${tutorialSteps.length}`,
+    `
+      <div class="tutorial-content">
+        <div class="tutorial-icon">${step.icon}</div>
+
+        <div class="tutorial-progress">
+          ${tutorialSteps.map((_, index) => `
+            <span class="tutorial-dot ${index === tutorialIndex ? 'is-active' : ''}"></span>
+          `).join('')}
+        </div>
+
+        <h2>${step.title}</h2>
+        <p>${step.description}</p>
+
+        <div class="tutorial-tip">
+          <strong>Consejo</strong>
+          <p>${step.tip}</p>
+        </div>
+      </div>
+    `,
+    `
+      <div class="tutorial-actions">
+        ${tutorialIndex > 0
+          ? '<button class="button button--secondary" data-action="tutorial-prev">Anterior</button>'
+          : '<button class="button button--secondary" data-action="tutorial-skip">Saltar</button>'}
+
+        <button class="button button--primary" data-action="${isLast ? 'tutorial-finish' : 'tutorial-next'}">
+          ${isLast ? 'Finalizar' : 'Siguiente →'}
+        </button>
+      </div>
+    `
+  );
+}
+
+function changeTutorial(direction) {
+  const next = tutorialIndex + direction;
+
+  if (next < 0 || next >= tutorialSteps.length) return;
+
+  showTutorial(next);
+}
+
 async function finishTutorial() {
   await setSetting('tutorialSeen', true);
   closeModal();
-  toast('¡Listo! Ya conoces lo básico de Inventory.');
-}
-
-async function showTutorial(step = 0) {
-  const steps = [
-    {
-      title: 'Tu panel principal',
-      text: 'Aquí tienes el resumen de tu negocio: inventarios, productos, unidades y alertas de stock bajo. También puedes revisar las ventas del día.',
-      tip: 'Usa Inicio para volver al resumen cuando quieras.'
-    },
-    {
-      title: 'Inventarios y productos',
-      text: 'Crea inventarios para organizar tu mercancía. Dentro de cada uno puedes registrar productos, fotos, precios, cantidades y códigos.',
-      tip: 'La búsqueda te ayuda a encontrar rápidamente un producto mientras atiendes a tus clientes.'
-    },
-    {
-      title: 'Registra tus ventas',
-      text: 'Desde un producto puedes registrar una venta, indicar la cantidad y el método de pago. Inventory descuenta las unidades vendidas automáticamente.',
-      tip: 'Consulta después cada operación en el Historial de ventas.'
-    },
-    {
-      title: 'Alertas y copias de seguridad',
-      text: 'Revisa Stock bajo para detectar productos que necesitan reposición. En Configuración puedes editar tu perfil, exportar tus datos o restaurar una copia.',
-      tip: 'Tus datos se guardan localmente en este dispositivo. Exporta copias de seguridad periódicamente.'
-    }
-  ];
-
-  const current = Math.max(0, Math.min(Number(step) || 0, steps.length - 1));
-  state.tutorialStep = current;
-  const item = steps[current];
-
-  const progress = steps.map((_, index) =>
-    '<span class="tutorial-progress__dot ' + (index <= current ? 'is-active' : '') + '"></span>'
-  ).join('');
-
-  openModal(
-    'Conoce Inventory · ' + (current + 1) + ' de ' + steps.length,
-    'Una guía rápida para empezar.',
-    '<div class="tutorial-card">' +
-      '<div class="tutorial-progress" aria-label="Progreso">' + progress + '</div>' +
-      '<h3>' + item.title + '</h3>' +
-      '<p>' + item.text + '</p>' +
-      '<div class="tutorial-tip"><strong>Consejo</strong><p>' + item.tip + '</p></div>' +
-    '</div>',
-    '<button class="button button--ghost" data-action="tutorial-skip">Saltar</button>' +
-    (current > 0 ? '<button class="button button--secondary" data-action="tutorial-prev">Atrás</button>' : '') +
-    '<button class="button button--primary" data-action="tutorial-next">' +
-      (current === steps.length - 1 ? 'Finalizar' : 'Siguiente') +
-    '</button>'
-  );
+  toast('¡Tutorial completado! Ya puedes comenzar.');
 }
 
 function showPhoto(product) {
@@ -1090,27 +1119,6 @@ async function handleClick(action, element) {
   switch (action) {
     case 'setup':
       showSetup();
-      break;
-
-    case 'tutorial':
-      await showTutorial(0);
-      break;
-
-    case 'tutorial-next':
-      if (state.tutorialStep >= 3) await finishTutorial();
-      else await showTutorial(state.tutorialStep + 1);
-      break;
-
-    case 'tutorial-prev':
-      await showTutorial(state.tutorialStep - 1);
-      break;
-
-    case 'tutorial-skip':
-      await finishTutorial();
-      break;
-
-    case 'retry-init':
-      await init();
       break;
 
     case 'home':
@@ -1206,6 +1214,27 @@ async function handleClick(action, element) {
 
     case 'choose-import':
       $('#backup-file')?.click();
+      break;
+
+    case 'show-tutorial':
+      showTutorial();
+      break;
+
+    case 'tutorial-next':
+      changeTutorial(1);
+      break;
+
+    case 'tutorial-prev':
+      changeTutorial(-1);
+      break;
+
+    case 'tutorial-skip':
+    case 'tutorial-finish':
+      await finishTutorial();
+      break;
+
+    case 'retry-init':
+      await init();
       break;
 
     case 'delete-all-data':
