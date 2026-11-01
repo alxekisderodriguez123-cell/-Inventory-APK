@@ -50,6 +50,7 @@ const $ = (selector, root = document) => root.querySelector(selector);
 
 const state = {
   screen: 'loading',
+  tutorialStep: 0,
   profile: null,
   inventories: [],
   activeInventoryId: null,
@@ -84,21 +85,14 @@ function shell(content, active = 'home', navigation = true) {
     <div class="app-shell">
       <header class="topbar">
         <div class="brand">
-          <div class="brand-mark">
-            <img src="./assets/inventory-logo.png" alt="Inventory" class="inventory-logo">
-          </div>
+          <div class="brand-mark"><img src="./assets/inventory-logo.png" alt="Inventory" class="inventory-logo"></div>
           <div>
             <p class="brand-name">Inventory</p>
             <p class="brand-caption">Tu negocio, bajo control</p>
           </div>
         </div>
 
-        <button class="avatar-button" data-action="settings" aria-label="Configuración">
-          <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="12" cy="12" r="3"/>
-            <path d="m19.4 15 .1.1 1.4 1.1-1.4 2.4-1.7-.7a8 8 0 0 1-2 .9l-.3 1.8h-2.8l-.3-1.8a8 8 0 0 1-2-.9l-1.7.7-1.4-2.4 1.4-1.1a8 8 0 0 1 0-2.2l-1.4-1.1 1.4-2.4 1.7.7a8 8 0 0 1 2-.9l.3-1.8h2.8l.3 1.8a8 8 0 0 1 2 .9l1.7-.7 1.4 2.4-1.4 1.1a8 8 0 0 1 0 2.1Z"/>
-          </svg>
-        </button>
+        <button class="avatar-button" data-action="settings" aria-label="Configuración"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a8 8 0 0 0 0-6l1.4-1.1-1.4-2.4-1.7.7a8 8 0 0 0-2-.9L15.4 3h-2.8l-.3 2.3a8 8 0 0 0-2 .9l-1.7-.7-1.4 2.4L8.6 9a8 8 0 0 0 0 6l-1.4 1.1 1.4 2.4 1.7-.7a8 8 0 0 0 2 .9l.3 2.3h2.8l.3-2.3a8 8 0 0 0 2-.9l1.7.7 1.4-2.4z"/></svg></button>
       </header>
 
       <main class="page-content">${content}</main>
@@ -134,7 +128,7 @@ function shell(content, active = 'home', navigation = true) {
           <button type="button" class="bottom-nav__item ${active === 'settings' ? 'is-active' : ''}" data-action="settings" ${active === 'settings' ? 'aria-current="page"' : ''}>
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <circle cx="12" cy="12" r="3"/>
-              <path d="m19.4 15 .1.1 1.4 1.1-1.4 2.4-1.7-.7a8 8 0 0 1-2 .9l-.3 1.8h-2.8l-.3-1.8a8 8 0 0 1-2-.9l-1.7.7-1.4-2.4 1.4-1.1a8 8 0 0 1 0-2.2l-1.4-1.1 1.4-2.4 1.7.7a8 8 0 0 1 2-.9l.3-1.8h2.8l.3 1.8a8 8 0 0 1 2 .9l1.7-.7 1.4 2.4-1.4 1.1a8 8 0 0 1 0 2.1Z" transform="translate(-1 -1) scale(1.08)"/>
+              <path d="m19.4 15 .1 1.1-1.4 2.4-1.7-.7a8 8 0 0 1-2 .9l-.3 1.8h-2.8l-.3-1.8a8 8 0 0 1-2-.9l-1.7.7-1.4-2.4 1.4-1.1a8 8 0 0 1 0-2.2l-1.4-1.1 1.4-2.4 1.7.7a8 8 0 0 1 2-.9l.3-1.8h2.8l.3 1.8a8 8 0 0 1 2 .9l1.7-.7 1.4 2.4-1.4 1.1a8 8 0 0 1 0 2.1Z" transform="translate(-1 -1) scale(1.08)"/>
             </svg>
             <span>Ajustes</span>
           </button>
@@ -174,13 +168,11 @@ function showWelcome() {
   renderInto('#app', `
     <div class="app-shell">
       <section class="welcome-screen">
-        <div class="welcome-visual welcome-visual--robot">
-          <div class="welcome-visual__orb">
-            <img src="./assets/inventory-logo.png" alt="Inventory" class="inventory-logo">
-          </div>
-          <img src="./assets/robot.png" alt="Asistente de Inventory" class="welcome-robot">
+        <div class="welcome-visual">
+          <div class="welcome-visual__orb"><img src="./assets/inventory-logo.png" alt="Inventory" class="inventory-logo"></div>
         </div>
 
+        <div class="welcome-robot"><img src="./assets/robot.png" alt="" class="welcome-robot__image"></div>
         <span class="eyebrow">ORGANIZA · CONTROLA · CRECE</span>
 
         <h1>Tu inventario,<br><em>sin complicaciones.</em></h1>
@@ -335,101 +327,10 @@ async function showHome() {
         <h2>Tus inventarios</h2>
         <p>Organiza tus productos por colección.</p>
       </div>
-            <button class="button button--primary button--icon" data-action="add-inventory">
+
+      <button class="button button--primary button--icon" data-action="add-inventory">
         +
       </button>
-    </div>
-
-    <section class="inventory-list">
-      ${cards || emptyState(
-        'Aún no tienes inventarios',
-        'Crea uno para empezar a registrar productos.',
-        'add-inventory'
-      )}
-    </section>
-  `;
-
-  renderInto('#app', shell(content, 'home'));
-}
-
-async function showInventories() {
-  state.screen = 'inventories';
-  await refreshData();
-
-  let cards = '';
-
-  for (const inventory of state.inventories) {
-    const products = await getProducts(inventory.id);
-
-    cards += inventoryCard(
-      inventory,
-      products.length,
-      products.reduce((sum, p) => sum + Number(p.quantity || 0), 0)
-    );
-  }
-
-  renderInto('#app', shell(`
-    ${pageHeader('Inventarios', 'Organiza tus productos.', 'add-inventory')}
-
-    <section class="inventory-list">
-      ${cards || emptyState(
-        'Tu espacio está listo',
-        'Crea tu primer inventario.',
-        'add-inventory'
-      )}
-    </section>
-  `, 'inventories'));
-}
-
-async function showInventory(id) {
-  const inventory = await getInventory(id);
-
-  if (!inventory) {
-    toast('No se encontró ese inventario.', true);
-    await showInventories();
-    return;
-  }
-
-  state.screen = 'inventory';
-  state.activeInventoryId = inventory.id;
-
-  await setSetting('activeInventoryId', inventory.id);
-
-  renderInto('#app', shell(`
-    <div class="inline-actions">
-      ${actionButton('← Inventarios', 'inventories')}
-      ${actionButton('Editar inventario', 'edit-inventory', `data-id="${inventory.id}"`)}
-    </div>
-
-    ${pageHeader(
-      inventory.name,
-      inventory.description || 'Productos de este inventario.',
-      'add-product'
-    )}
-
-    <div class="search-box">
-      <span class="search-box__icon">⌕</span>
-
-      <input
-        id="product-search"
-        type="search"
-        placeholder="Buscar nombre, código o categoría..."
-        autocomplete="off"
-      >
-    </div>
-
-    <div class="section-heading">
-      <h2>Productos</h2>
-      <button class="text-button" data-action="low-stock">Ver stock bajo</button>
-    </div>
-
-    <section id="product-list" class="product-list">
-      <p class="muted">Cargando productos...</p>
-    </section>
-  `, 'inventories'));
-
-  await renderProductList('');
-                      }
     </div>
 
     <section class="inventory-list">
@@ -655,8 +556,7 @@ function productForm(product = null) {
             >
           </label>
         </div>
-
-        <div class="form-grid">
+                <div class="form-grid">
           <label>
             Cantidad disponible
             <input
@@ -756,6 +656,7 @@ function sellForm(product) {
             required
           >
         </label>
+
         <label>
           Precio por unidad (${escapeHTML(product.currency || 'USD')})
           <input
@@ -846,7 +747,7 @@ async function handleFormSubmit(form) {
       throw new Error('Completa tu nombre y el nombre del negocio.');
     }
 
-    const isFirstProfile = !state.profile;
+    const firstProfile = !state.profile;
     const tutorialSeen = await getSetting('tutorialSeen', false);
 
     await setSetting('profile', profile);
@@ -855,9 +756,7 @@ async function handleFormSubmit(form) {
     toast('Perfil guardado correctamente.');
     await showHome();
 
-    if (isFirstProfile && !tutorialSeen) {
-      showTutorial(0);
-    }
+    if (firstProfile && !tutorialSeen) showTutorial(0);
     return;
   }
 
@@ -940,7 +839,6 @@ async function handleFormSubmit(form) {
     await showInventory(state.activeInventoryId);
     return;
   }
-
   if (type === 'sale') {
     const productId = Number(values.productId);
     const quantity = Number(values.quantity);
@@ -1070,9 +968,7 @@ async function showSettings() {
     ${pageHeader('Configuración', 'Tu aplicación, tus datos y tus reglas.')}
     <section class="panel settings-panel">
       <div class="settings-profile">
-        <div class="profile-avatar">
-          <img src="./assets/inventory-logo.png" alt="Inventory" class="inventory-logo">
-        </div>
+        <div class="profile-avatar"><img src="./assets/inventory-logo.png" alt="Inventory" class="inventory-logo"></div>
         <div>
           <strong>${escapeHTML(state.profile?.businessName || 'Mi negocio')}</strong>
           <p>${escapeHTML(state.profile?.ownerName || '')}</p>
@@ -1084,6 +980,11 @@ async function showSettings() {
         <span>›</span>
       </button>
 
+      <button class="settings-row" data-action="open-tutorial">
+        <span><strong>Ver tutorial</strong><small>Conoce las funciones principales de Inventory</small></span>
+        <span>›</span>
+      </button>
+
       <button class="settings-row" data-action="export-backup">
         <span><strong>Exportar copia de seguridad</strong><small>Guardar los datos en un archivo JSON</small></span>
         <span>›</span>
@@ -1091,10 +992,6 @@ async function showSettings() {
 
       <button class="settings-row" data-action="choose-import">
         <span><strong>Importar copia de seguridad</strong><small>Restaurar datos desde un archivo JSON</small></span>
-        <span>›</span>
-      </button>
-            <button class="settings-row" data-action="show-tutorial">
-        <span><strong>Ver tutorial de nuevo</strong><small>Aprende a utilizar Inventory paso a paso</small></span>
         <span>›</span>
       </button>
 
@@ -1109,103 +1006,6 @@ async function showSettings() {
       <p class="settings-footnote">Inventory · Datos almacenados localmente en este dispositivo.</p>
     </section>
   `, 'settings'));
-              }
-const tutorialSteps = [
-  {
-    icon: '▦',
-    title: 'Tu panel principal',
-    description: 'Aquí encontrarás un resumen de tu negocio: inventarios, productos, unidades disponibles y alertas de stock bajo.',
-    tip: 'Desde Inicio puedes consultar rápidamente cómo marcha tu inventario.'
-  },
-  {
-    icon: '▤',
-    title: 'Organiza tus inventarios',
-    description: 'Crea inventarios para separar tus productos. Dentro de cada uno puedes registrar nombres, códigos, categorías, cantidades, precios y fotografías.',
-    tip: 'Utiliza el buscador para localizar productos sin tener que revisar listas interminables.'
-  },
-  {
-    icon: '↗',
-    title: 'Registra tus ventas',
-    description: 'Puedes registrar ventas desde los productos. Inventory actualizará las existencias automáticamente y guardará cada operación en el historial.',
-    tip: 'Consulta el historial cuando necesites revisar una venta anterior.'
-  },
-  {
-    icon: '⚙',
-    title: 'Alertas y configuración',
-    description: 'Consulta los productos con poco stock, modifica tu perfil y administra tus copias de seguridad desde Ajustes.',
-    tip: 'Exporta copias de seguridad periódicamente para proteger tus datos.'
-  }
-];
-
-let tutorialIndex = 0;
-
-function showTutorial(index = 0) {
-  tutorialIndex = Math.max(0, Math.min(index, tutorialSteps.length - 1));
-  renderTutorialStep();
-}
-
-function renderTutorialStep() {
-  const step = tutorialSteps[tutorialIndex];
-  const isLast = tutorialIndex === tutorialSteps.length - 1;
-
-  openModal(
-    'Conoce Inventory',
-    `Paso ${tutorialIndex + 1} de ${tutorialSteps.length}`,
-    `
-      <div class="tutorial-content">
-        <div class="tutorial-robot-wrap">
-          <img
-            src="./assets/robot.png"
-            alt="Asistente de Inventory"
-            class="tutorial-robot"
-          >
-        </div>
-
-        <div class="tutorial-copy">
-          <div class="tutorial-icon">${step.icon}</div>
-
-          <div class="tutorial-progress">
-            ${tutorialSteps.map((_, index) => `
-              <span class="tutorial-dot ${index === tutorialIndex ? 'is-active' : ''}"></span>
-            `).join('')}
-          </div>
-
-          <h2>${step.title}</h2>
-          <p>${step.description}</p>
-
-          <div class="tutorial-tip">
-            <strong>Consejo</strong>
-            <p>${step.tip}</p>
-          </div>
-        </div>
-      </div>
-    `,
-    `
-      <div class="tutorial-actions">
-        ${tutorialIndex > 0
-          ? '<button class="button button--secondary" data-action="tutorial-prev">Anterior</button>'
-          : '<button class="button button--secondary" data-action="tutorial-skip">Saltar</button>'}
-
-        <button class="button button--primary" data-action="${isLast ? 'tutorial-finish' : 'tutorial-next'}">
-          ${isLast ? 'Finalizar' : 'Siguiente →'}
-        </button>
-      </div>
-    `
-  );
-}
-
-function changeTutorial(direction) {
-  const next = tutorialIndex + direction;
-
-  if (next < 0 || next >= tutorialSteps.length) return;
-
-  showTutorial(next);
-}
-
-async function finishTutorial() {
-  await setSetting('tutorialSeen', true);
-  closeModal();
-  toast('¡Tutorial completado! Ya puedes comenzar.');
 }
 
 function showPhoto(product) {
@@ -1325,27 +1125,6 @@ async function handleClick(action, element) {
       $('#backup-file')?.click();
       break;
 
-    case 'show-tutorial':
-      showTutorial();
-      break;
-
-    case 'tutorial-next':
-      changeTutorial(1);
-      break;
-
-    case 'tutorial-prev':
-      changeTutorial(-1);
-      break;
-
-    case 'tutorial-skip':
-    case 'tutorial-finish':
-      await finishTutorial();
-      break;
-
-    case 'retry-init':
-      await init();
-      break;
-
     case 'delete-all-data':
       if (window.confirm('¿Seguro que quieres eliminar TODOS los inventarios, productos, ventas y ajustes? Esta acción no se puede deshacer.')) {
         await clearAllData();
@@ -1360,7 +1139,6 @@ async function handleClick(action, element) {
       break;
   }
 }
-
 document.addEventListener('click', async event => {
   const target = event.target.closest('[data-action]');
   if (!target) return;
@@ -1434,6 +1212,89 @@ document.addEventListener('change', async event => {
   }
 });
 
+const tutorialSteps = [
+  {
+    title: 'Tu panel principal',
+    text: 'Aquí tienes un resumen de tu negocio: inventarios, productos, existencias y alertas importantes.',
+    tip: 'Usa Inicio para volver rápidamente a este panel.'
+  },
+  {
+    title: 'Inventarios y productos',
+    text: 'Crea inventarios para organizar tu mercancía. Añade productos con nombre, precio, cantidad, variantes y fotografías.',
+    tip: 'Puedes abrir las fotos de tus productos para verlas en grande.'
+  },
+  {
+    title: 'Registra tus ventas',
+    text: 'Registra cada venta, selecciona cantidades y métodos de pago. Inventory descuenta automáticamente las unidades vendidas.',
+    tip: 'Consulta el historial para revisar tus movimientos.'
+  },
+  {
+    title: 'Alertas y copias de seguridad',
+    text: 'Revisa productos con pocas existencias y entra en Ajustes para exportar o restaurar tus datos.',
+    tip: 'Guarda copias de seguridad periódicamente.'
+  }
+];
+
+function showTutorial(index = 0) {
+  state.tutorialStep = Math.max(0, Math.min(index, tutorialSteps.length - 1));
+  renderTutorialStep();
+}
+
+function renderTutorialStep() {
+  const step = tutorialSteps[state.tutorialStep];
+  const dots = tutorialSteps.map((item, index) => `
+    <span class="tutorial-dot ${index === state.tutorialStep ? 'is-active' : ''}"></span>
+  `).join('');
+
+  renderInto('#modal-root', `
+    <div class="modal-backdrop tutorial-backdrop">
+      <section class="modal tutorial-modal" role="dialog" aria-modal="true" aria-labelledby="tutorial-title">
+        <div class="tutorial-progress">${dots}</div>
+
+        <div class="tutorial-content">
+          <div class="tutorial-robot-wrap">
+            <img src="./assets/robot.png" alt="" class="tutorial-robot">
+          </div>
+
+          <div class="tutorial-copy">
+            <span class="tutorial-step-label">PASO ${state.tutorialStep + 1} DE ${tutorialSteps.length}</span>
+            <h2 id="tutorial-title">${step.title}</h2>
+            <p>${step.text}</p>
+            <div class="tutorial-tip">${step.tip}</div>
+          </div>
+        </div>
+
+        <footer class="tutorial-actions">
+          <button class="button button--secondary" data-action="skip-tutorial">Saltar</button>
+
+          <div class="tutorial-actions__right">
+            ${state.tutorialStep > 0 ? '<button class="button button--secondary" data-action="previous-tutorial">Atrás</button>' : ''}
+            <button class="button button--primary" data-action="next-tutorial">
+              ${state.tutorialStep === tutorialSteps.length - 1 ? 'Finalizar' : 'Siguiente'}
+            </button>
+          </div>
+        </footer>
+      </section>
+    </div>
+  `);
+}
+
+async function finishTutorial() {
+  await setSetting('tutorialSeen', true);
+  closeModal();
+  toast('¡Listo! Ya conoces lo básico de Inventory.');
+}
+
+async function changeTutorial(direction) {
+  const next = state.tutorialStep + direction;
+
+  if (next < 0) return;
+  if (next >= tutorialSteps.length) return finishTutorial();
+
+  state.tutorialStep = next;
+  renderTutorialStep();
+}
+
 async function init() {
   try {
     await refreshData();
@@ -1448,7 +1309,7 @@ async function init() {
 
     renderInto('#app', `
       <section class="error-screen">
-        <div class="loading-mark">I<span>.</span></div>
+        <div class="loading-mark"><img src="./assets/inventory-logo.png" alt="Inventory" class="inventory-logo"></div>
         <h1>No pudimos iniciar Inventory</h1>
         <p>Ocurrió un problema al preparar la base de datos local.</p>
         <button class="button button--primary" data-action="retry-init">Intentar de nuevo</button>
