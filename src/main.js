@@ -1124,6 +1124,21 @@ async function handleClick(action, element) {
     case 'choose-import':
       $('#backup-file')?.click();
       break;
+    case 'open-tutorial':
+      showTutorial(0);
+      break;
+
+    case 'next-tutorial':
+      await changeTutorial(1);
+      break;
+
+    case 'previous-tutorial':
+      await changeTutorial(-1);
+      break;
+
+    case 'skip-tutorial':
+      await finishTutorial();
+      break;
 
     case 'delete-all-data':
       if (window.confirm('¿Seguro que quieres eliminar TODOS los inventarios, productos, ventas y ajustes? Esta acción no se puede deshacer.')) {
