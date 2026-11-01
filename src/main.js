@@ -174,10 +174,11 @@ function showWelcome() {
   renderInto('#app', `
     <div class="app-shell">
       <section class="welcome-screen">
-        <div class="welcome-visual">
+        <div class="welcome-visual welcome-visual--robot">
           <div class="welcome-visual__orb">
             <img src="./assets/inventory-logo.png" alt="Inventory" class="inventory-logo">
           </div>
+          <img src="./assets/robot.png" alt="Asistente de Inventory" class="welcome-robot">
         </div>
 
         <span class="eyebrow">ORGANIZA · CONTROLA · CRECE</span>
@@ -337,6 +338,98 @@ async function showHome() {
             <button class="button button--primary button--icon" data-action="add-inventory">
         +
       </button>
+    </div>
+
+    <section class="inventory-list">
+      ${cards || emptyState(
+        'Aún no tienes inventarios',
+        'Crea uno para empezar a registrar productos.',
+        'add-inventory'
+      )}
+    </section>
+  `;
+
+  renderInto('#app', shell(content, 'home'));
+}
+
+async function showInventories() {
+  state.screen = 'inventories';
+  await refreshData();
+
+  let cards = '';
+
+  for (const inventory of state.inventories) {
+    const products = await getProducts(inventory.id);
+
+    cards += inventoryCard(
+      inventory,
+      products.length,
+      products.reduce((sum, p) => sum + Number(p.quantity || 0), 0)
+    );
+  }
+
+  renderInto('#app', shell(`
+    ${pageHeader('Inventarios', 'Organiza tus productos.', 'add-inventory')}
+
+    <section class="inventory-list">
+      ${cards || emptyState(
+        'Tu espacio está listo',
+        'Crea tu primer inventario.',
+        'add-inventory'
+      )}
+    </section>
+  `, 'inventories'));
+}
+
+async function showInventory(id) {
+  const inventory = await getInventory(id);
+
+  if (!inventory) {
+    toast('No se encontró ese inventario.', true);
+    await showInventories();
+    return;
+  }
+
+  state.screen = 'inventory';
+  state.activeInventoryId = inventory.id;
+
+  await setSetting('activeInventoryId', inventory.id);
+
+  renderInto('#app', shell(`
+    <div class="inline-actions">
+      ${actionButton('← Inventarios', 'inventories')}
+      ${actionButton('Editar inventario', 'edit-inventory', `data-id="${inventory.id}"`)}
+    </div>
+
+    ${pageHeader(
+      inventory.name,
+      inventory.description || 'Productos de este inventario.',
+      'add-product'
+    )}
+
+    <div class="search-box">
+      <span class="search-box__icon">⌕</span>
+
+      <input
+        id="product-search"
+        type="search"
+        placeholder="Buscar nombre, código o categoría..."
+        autocomplete="off"
+      >
+    </div>
+
+    <div class="section-heading">
+      <h2>Productos</h2>
+      <button class="text-button" data-action="low-stock">Ver stock bajo</button>
+    </div>
+
+    <section id="product-list" class="product-list">
+      <p class="muted">Cargando productos...</p>
+    </section>
+  `, 'inventories'));
+
+  await renderProductList('');
+                      }
     </div>
 
     <section class="inventory-list">
@@ -663,7 +756,7 @@ function sellForm(product) {
             required
           >
         </label>
-                <label>
+        <label>
           Precio por unidad (${escapeHTML(product.currency || 'USD')})
           <input
             name="unitPrice"
@@ -753,11 +846,18 @@ async function handleFormSubmit(form) {
       throw new Error('Completa tu nombre y el nombre del negocio.');
     }
 
+    const isFirstProfile = !state.profile;
+    const tutorialSeen = await getSetting('tutorialSeen', false);
+
     await setSetting('profile', profile);
     state.profile = profile;
     closeModal();
     toast('Perfil guardado correctamente.');
     await showHome();
+
+    if (isFirstProfile && !tutorialSeen) {
+      showTutorial(0);
+    }
     return;
   }
 
@@ -1009,8 +1109,7 @@ async function showSettings() {
       <p class="settings-footnote">Inventory · Datos almacenados localmente en este dispositivo.</p>
     </section>
   `, 'settings'));
-}
-
+              }
 const tutorialSteps = [
   {
     icon: '▦',
@@ -1054,20 +1153,30 @@ function renderTutorialStep() {
     `Paso ${tutorialIndex + 1} de ${tutorialSteps.length}`,
     `
       <div class="tutorial-content">
-        <div class="tutorial-icon">${step.icon}</div>
-
-        <div class="tutorial-progress">
-          ${tutorialSteps.map((_, index) => `
-            <span class="tutorial-dot ${index === tutorialIndex ? 'is-active' : ''}"></span>
-          `).join('')}
+        <div class="tutorial-robot-wrap">
+          <img
+            src="./assets/robot.png"
+            alt="Asistente de Inventory"
+            class="tutorial-robot"
+          >
         </div>
 
-        <h2>${step.title}</h2>
-        <p>${step.description}</p>
+        <div class="tutorial-copy">
+          <div class="tutorial-icon">${step.icon}</div>
 
-        <div class="tutorial-tip">
-          <strong>Consejo</strong>
-          <p>${step.tip}</p>
+          <div class="tutorial-progress">
+            ${tutorialSteps.map((_, index) => `
+              <span class="tutorial-dot ${index === tutorialIndex ? 'is-active' : ''}"></span>
+            `).join('')}
+          </div>
+
+          <h2>${step.title}</h2>
+          <p>${step.description}</p>
+
+          <div class="tutorial-tip">
+            <strong>Consejo</strong>
+            <p>${step.tip}</p>
+          </div>
         </div>
       </div>
     `,
